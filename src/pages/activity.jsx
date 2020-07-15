@@ -11,20 +11,36 @@ const Activity = () => {
   const { id } = useParams();
   const [entry, setEntry] = useState();
   const [images, setImages] = useState();
-  const [timeup, setTimeup] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     async function getActivity() {
-      setEntry(await client.getEntry(id));
-      setImages(await getImages(id));
+      try {
+        setEntry(await client.getEntry(id));
+        setImages(await getImages(id));
+      } catch {
+        setError(true);
+      }
     }
     getActivity();
+
     setTimeout(() => {
-      setTimeup(true);
+      setError(true);
     }, 5000);
   }, [id]);
 
   if (!entry && !images) {
+    if (error) {
+      return (
+        <div
+          style={{
+            padding: "2em",
+          }}
+        >
+          Oopsie doopsie! Something's wrong :-(
+        </div>
+      );
+    }
     return (
       <div
         style={{
@@ -34,12 +50,6 @@ const Activity = () => {
       >
         Loading...
         <br />
-        {timeup && (
-          <small>
-            Taking too long? Check your connection and refresh, or contact the
-            site administrator.
-          </small>
-        )}
       </div>
     );
   }
