@@ -82,7 +82,7 @@ const Activity = () => {
               >
                 <img
                   className="gallery-image rounded fit-cover"
-                  src={image.url}
+                  src={image.url + "?w=800&fm=webp&q=70"}
                   alt={image.description}
                 />
                 <div className="gallery-image-container-middle">
