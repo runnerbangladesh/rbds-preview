@@ -5,6 +5,7 @@ import "./activity.scss";
 import { Container, Row, Col } from "react-bootstrap";
 import marked from "marked";
 import Masonry from "react-masonry-css";
+import dateFormat from "dateformat";
 
 const Activity = () => {
   const { id } = useParams();
@@ -15,15 +16,13 @@ const Activity = () => {
   useEffect(() => {
     async function getActivity() {
       setEntry(await client.getEntry(id));
-
       setImages(await getImages(id));
     }
     getActivity();
     setTimeout(() => {
       setTimeup(true);
     }, 5000);
-    document.title = entry ? "Preview — " + entry.fields.title : "Preview";
-  }, [id, entry]);
+  }, [id]);
 
   if (!entry && !images) {
     return (
@@ -44,6 +43,9 @@ const Activity = () => {
       </div>
     );
   }
+  document.title = "Preview — " + entry.fields.title;
+  const parsedBody = marked(entry.fields.articleBody);
+  const parsedDate = new Date(entry.fields.date);
 
   return (
     <Fragment>
@@ -53,7 +55,9 @@ const Activity = () => {
             <Col lg={8} md={10} className="mx-auto">
               <div className="post-heading">
                 <h1>{entry.fields.title}</h1>
-                <span className="meta">{entry.fields.date}</span>
+                <span className="meta">
+                  {dateFormat(parsedDate, "d mmmm yyyy")}
+                </span>
               </div>
             </Col>
           </Row>
@@ -95,9 +99,7 @@ const Activity = () => {
             <Col
               className="mx-auto px-md-7 px-4 article"
               dangerouslySetInnerHTML={{
-                __html: marked(entry.fields.articleBody, {
-                  sanitize: true,
-                }),
+                __html: parsedBody,
               }}
             />
           </Row>
