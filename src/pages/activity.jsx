@@ -6,12 +6,15 @@ import { Container, Row, Col } from "react-bootstrap";
 import marked from "marked";
 import Masonry from "react-masonry-css";
 import dateFormat from "dateformat";
+import Carousel, { ModalGateway, Modal } from "react-images";
 
 const Activity = () => {
   const { id } = useParams();
   const [entry, setEntry] = useState();
   const [images, setImages] = useState();
   const [error, setError] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState(0);
 
   useEffect(() => {
     async function getActivity() {
@@ -23,11 +26,11 @@ const Activity = () => {
       }
     }
     getActivity();
-
-    setTimeout(() => {
-      setError(true);
-    }, 5000);
   }, [id]);
+  const openLightbox = (index) => {
+    setCurrentImage(index);
+    setModalIsOpen(true);
+  };
 
   if (!entry && !images) {
     if (error) {
@@ -85,8 +88,8 @@ const Activity = () => {
               <div
                 key={index}
                 role="button"
-                //   onClick={() => /*openLightbox(index)*/}
-                //   onKeyPress={e => e.key === "Enter" && openLightbox(index)}
+                onClick={() => openLightbox(index)}
+                onKeyPress={(e) => e.key === "Enter" && openLightbox(index)}
                 tabIndex={0}
                 className="gallery-image-container shadow"
               >
@@ -113,21 +116,30 @@ const Activity = () => {
               }}
             />
           </Row>
-          <Row>
-            <Col className="mt-4">
-              {/* <a href="/">&larr; Back to Activities</a> */}
-            </Col>
-            <Col className="mt-4 text-right">
-              {/* <ShareComponent
-                excerpt={post.articleBody.childMarkdownRemark.excerpt}
-                slug={post.slug}
-                page="activities"
-                title={post.title}
-              /> */}
-            </Col>
-          </Row>
         </Container>
       </article>
+      {images && (
+        <ModalGateway>
+          {modalIsOpen ? (
+            <Modal onClose={() => setModalIsOpen(false)}>
+              <Carousel
+                views={images.map((img) => ({
+                  src: img.url + "?w=800&fm=webp&q=70",
+                  caption: img.description,
+                  alt: img.description,
+                }))}
+                currentIndex={currentImage}
+                modalProps={{ allowFullscreen: false }}
+                styles={{
+                  footerCaption: () => ({
+                    fontSize: "16",
+                  }),
+                }}
+              ></Carousel>
+            </Modal>
+          ) : null}
+        </ModalGateway>
+      )}
     </Fragment>
   );
 };
