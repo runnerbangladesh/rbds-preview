@@ -44,7 +44,7 @@ const Activity = () => {
     );
   }
   document.title = "Preview — " + entry.fields.title;
-  const parsedBody = marked(entry.fields.articleBody);
+  const parsedBody = marked(entry.fields.articleBody ?? "");
   const parsedDate = new Date(entry.fields.date);
 
   return (
