@@ -8,6 +8,7 @@ import Masonry from "react-masonry-css";
 import dateFormat from "dateformat";
 import Carousel, { ModalGateway, Modal } from "react-images";
 import useSWR from "swr";
+import Image from "react-image-fade-in";
 
 const Activity = () => {
   const { id } = useParams();
@@ -88,10 +89,11 @@ const Activity = () => {
                 tabIndex={0}
                 className="gallery-image-container shadow"
               >
-                <img
+                <Image
                   className="gallery-image rounded fit-cover"
                   src={image.url + "?w=800&fm=webp&q=70"}
                   alt={image.description}
+                  loading="lazy"
                 />
                 <div className="gallery-image-container-middle">
                   <div className="gallery-image-container-text">
