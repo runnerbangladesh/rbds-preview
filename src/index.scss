@@ -43,12 +43,14 @@ $spacers: (
     1rem * 10,
   ),
 );
+/*! purgecss end ignore */
 
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
+/*! purgecss start ignore */
 
 body {
   background-color: $bg-color;
-  // color: $fg-color;
+  color: $fg-color;
   font-family: $title-font;
 }
 .link,
