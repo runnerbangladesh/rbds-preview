@@ -1,3 +1,4 @@
+/*! purgecss start ignore */
 $bg-color: #222;
 $fg-color: #ddd;
 $title-color: #ccc;
@@ -46,7 +47,7 @@ $spacers: (
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
 
 body {
-  // background-color: $bg-color;
+  background-color: $bg-color;
   // color: $fg-color;
   font-family: $title-font;
 }
@@ -124,3 +125,4 @@ strong {
 .muted {
   color: #777777;
 }
+/* purgecss end ignore */

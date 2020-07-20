@@ -26,9 +26,10 @@ const Activity = () => {
 
   if (!data) {
     if (error) {
+      document.title = ":-(";
       return (
         <div className="error">
-          Oopsie doopsie! Something's wrong :-(
+          Four-oh-four!
           <br />
           <small className="muted">{error.message}</small>
         </div>
