@@ -17,7 +17,9 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
-    "typeface-fira-sans": "^0.0.75"
+    "swr": "^0.2.3",
+    "typeface-fira-sans": "^0.0.75",
+    "typescript": "^3.9.7"
   },
   "scripts": {
     "start": "react-scripts start",

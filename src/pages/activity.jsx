@@ -1,5 +1,5 @@
-import React, { useState, useEffect, Fragment } from "react";
-import client, { getImages } from "../contentful/client";
+import React, { useState, Fragment } from "react";
+import fetcher from "../contentful/client";
 import { useParams } from "react-router";
 import "./activity.scss";
 import { Container, Row, Col } from "react-bootstrap";
@@ -7,58 +7,39 @@ import marked from "marked";
 import Masonry from "react-masonry-css";
 import dateFormat from "dateformat";
 import Carousel, { ModalGateway, Modal } from "react-images";
+import useSWR from "swr";
 
 const Activity = () => {
   const { id } = useParams();
-  const [entry, setEntry] = useState();
-  const [images, setImages] = useState();
-  const [error, setError] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
+  const { data, error } = useSWR(id, fetcher, {
+    refreshInterval: process.env.NODE_ENV === "production" ? 10000 : undefined,
+    shouldRetryOnError: false,
+    errorRetryCount: 2,
+  });
 
-  useEffect(() => {
-    async function getActivity() {
-      try {
-        setEntry(await client.getEntry(id));
-        setImages(await getImages(id));
-      } catch {
-        setError(true);
-      }
-    }
-    getActivity();
-  }, [id]);
   const openLightbox = (index) => {
     setCurrentImage(index);
     setModalIsOpen(true);
   };
 
-  if (!entry && !images) {
+  if (!data) {
     if (error) {
       return (
-        <div
-          style={{
-            padding: "2em",
-          }}
-        >
+        <div className="error">
           Oopsie doopsie! Something's wrong :-(
+          <br />
+          <small className="muted">{error.message}</small>
         </div>
       );
     }
-    return (
-      <div
-        style={{
-          padding: "2em",
-          fontSize: "20pt",
-        }}
-      >
-        Loading...
-        <br />
-      </div>
-    );
+    return <div className="loading">Loading...</div>;
   }
-  document.title = "Preview — " + entry.fields.title;
-  const parsedBody = marked(entry.fields.articleBody ?? "");
-  const parsedDate = new Date(entry.fields.date);
+
+  document.title = "Preview — " + data.entry.fields.title;
+  const parsedBody = marked(data.entry.fields.articleBody ?? "");
+  const parsedDate = new Date(data.entry.fields.date);
 
   return (
     <Fragment>
@@ -67,7 +48,7 @@ const Activity = () => {
           <Row className="row">
             <Col lg={8} md={10} className="mx-auto">
               <div className="post-heading">
-                <h1>{entry.fields.title}</h1>
+                <h1>{data.entry.fields.title}</h1>
                 <span className="meta">
                   {dateFormat(parsedDate, "d mmmm yyyy")}
                 </span>
@@ -78,13 +59,13 @@ const Activity = () => {
       </header>
 
       <article>
-        {images && (
+        {data.images && (
           <Masonry
             breakpointCols={{ default: 3, 1100: 3, 700: 2, 500: 1 }}
             className="my-masonry-grid px-md-5 pt-md-5 p-3"
             columnClassName="my-masonry-grid_column"
           >
-            {images.map((image, index) => (
+            {data.images.map((image, index) => (
               <div
                 key={index}
                 role="button"
@@ -118,12 +99,12 @@ const Activity = () => {
           </Row>
         </Container>
       </article>
-      {images && (
+      {data.images && (
         <ModalGateway>
           {modalIsOpen ? (
             <Modal onClose={() => setModalIsOpen(false)}>
               <Carousel
-                views={images.map((img) => ({
+                views={data.images.map((img) => ({
                   src: img.url + "?w=800&fm=webp&q=70",
                   caption: img.description,
                   alt: img.description,
