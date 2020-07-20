@@ -11,12 +11,15 @@ import useSWR from "swr";
 
 const Activity = () => {
   const { id } = useParams();
+  const [loadingSlow, setLoadingSlow] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
   const { data, error } = useSWR(id, fetcher, {
     refreshInterval: process.env.NODE_ENV === "production" ? 10000 : undefined,
     shouldRetryOnError: false,
     errorRetryCount: 2,
+    loadingTimeout: 3000,
+    onLoadingSlow: () => setLoadingSlow(true),
   });
 
   const openLightbox = (index) => {
@@ -26,6 +29,7 @@ const Activity = () => {
 
   if (!data) {
     if (error) {
+      console.error(error);
       document.title = ":-(";
       return (
         <div className="error">
@@ -35,7 +39,16 @@ const Activity = () => {
         </div>
       );
     }
-    return <div className="loading">Loading...</div>;
+    document.title = "Loading preview...";
+    return (
+      <div className="loading">
+        Loading...
+        <br />
+        {loadingSlow && (
+          <small className="muted">This is taking too long.</small>
+        )}
+      </div>
+    );
   }
 
   document.title = "Preview — " + data.entry.fields.title;
