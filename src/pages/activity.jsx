@@ -9,6 +9,8 @@ import dateFormat from "dateformat";
 import Carousel, { ModalGateway, Modal } from "react-images";
 import useSWR from "swr";
 import Image from "react-image-fade-in";
+import ErrorComponent from "../components/ErrorComponent";
+import LoadingComponent from "../components/LoadingComponent";
 
 const Activity = () => {
   const { id } = useParams();
@@ -31,25 +33,9 @@ const Activity = () => {
   if (!data) {
     if (error) {
       console.error(error);
-      document.title = ":-(";
-      return (
-        <div className="error">
-          Four-oh-four!
-          <br />
-          <small className="muted">{error.message}</small>
-        </div>
-      );
+      return <ErrorComponent error={error} />;
     }
-    document.title = "Loading preview...";
-    return (
-      <div className="loading">
-        Loading...
-        <br />
-        {loadingSlow && (
-          <small className="muted">This is taking too long.</small>
-        )}
-      </div>
-    );
+    return <LoadingComponent loadingSlow={loadingSlow} />;
   }
 
   document.title = "Preview — " + data.entry.fields.title;
