@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from "react";
-import fetcher from "../contentful/client";
+import { fetchActivity } from "../contentful/client";
 import { useParams } from "react-router";
 import "./activity.scss";
 import { Container, Row, Col } from "react-bootstrap";
@@ -17,11 +17,7 @@ const Activity = () => {
   const [loadingSlow, setLoadingSlow] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
-  const { data, error } = useSWR(id, fetcher, {
-    refreshInterval: process.env.NODE_ENV === "production" ? 10000 : undefined,
-    shouldRetryOnError: false,
-    errorRetryCount: 2,
-    loadingTimeout: 3000,
+  const { data, error } = useSWR(id, fetchActivity, {
     onLoadingSlow: () => setLoadingSlow(true),
   });
 

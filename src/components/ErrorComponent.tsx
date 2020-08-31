@@ -1,6 +1,6 @@
 import React from "react";
 
-const ErrorComponent = ({ error }) => {
+const ErrorComponent = ({ error }: { error: any }) => {
   document.title = ":-(";
   return (
     <div className="error">

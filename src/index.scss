@@ -5,6 +5,10 @@ $title-color: #ccc;
 $accent-color: #f59c22;
 $title-font: "Fira Sans", sans-serif;
 
+:root {
+  --accent-color: #{$accent-color};
+}
+
 /* Bootstrap overrides */
 $primary: $accent-color;
 
@@ -34,6 +38,8 @@ $headings-color: $title-color;
 $border-radius: 5px;
 
 $enable-shadows: true;
+
+// $box-shadow:
 
 $spacers: (
   6: (
