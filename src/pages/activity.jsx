@@ -1,23 +1,22 @@
-import React, { useState, Fragment } from "react";
+import { useState, Fragment } from "react";
 import { fetchActivity } from "../contentful/client";
-import { useParams } from "react-router";
+import { useRoute } from "wouter";
 import "./activity.scss";
 import { Container, Row, Col } from "react-bootstrap";
 import marked from "marked";
 import Masonry from "react-masonry-css";
-import dateFormat from "dateformat";
+import { format } from "date-fns/fp";
 import Carousel, { ModalGateway, Modal } from "react-images";
 import useSWR from "swr";
-import Image from "react-image-fade-in";
 import ErrorComponent from "../components/ErrorComponent";
 import LoadingComponent from "../components/LoadingComponent";
 
 const Activity = () => {
-  const { id } = useParams();
+  const [, params] = useRoute("/activity/:id");
   const [loadingSlow, setLoadingSlow] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
-  const { data, error } = useSWR(id, fetchActivity, {
+  const { data, error } = useSWR(params.id, fetchActivity, {
     onLoadingSlow: () => setLoadingSlow(true),
   });
 
@@ -47,7 +46,7 @@ const Activity = () => {
               <div className="post-heading">
                 <h1>{data.entry.fields.title}</h1>
                 <span className="meta">
-                  {dateFormat(parsedDate, "d mmmm yyyy")}
+                  {format("d MMMM yyyy", parsedDate)}
                 </span>
               </div>
             </Col>
@@ -71,7 +70,7 @@ const Activity = () => {
                 tabIndex={0}
                 className="gallery-image-container shadow"
               >
-                <Image
+                <img
                   className="gallery-image rounded fit-cover"
                   src={image.url + "?w=800&fm=webp&q=70"}
                   alt={image.description}
@@ -97,7 +96,7 @@ const Activity = () => {
           </Row>
         </Container>
       </article>
-      {data.images && (
+      {data.images?.length > 0 && (
         <ModalGateway>
           {modalIsOpen ? (
             <Modal onClose={() => setModalIsOpen(false)}>

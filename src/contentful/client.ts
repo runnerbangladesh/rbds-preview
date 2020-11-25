@@ -1,4 +1,5 @@
 import * as contentful from "contentful";
+import { Document } from "@contentful/rich-text-types";
 
 interface ImageData {
   description: string;
@@ -11,8 +12,8 @@ interface ActivityEntryFields {
 }
 interface EventEntryFields {
   title: string;
-  body: string;
-  eventEndDate: string;
+  description: Document;
+  eventEndDate?: string;
   eventStartDate: string;
   facebookLink: string;
   images: contentful.Asset[];
@@ -49,53 +50,45 @@ const client = contentful.createClient({
 });
 
 export async function fetchActivity(id: string): Promise<ActivityData> {
-  try {
-    const entry = await client.getEntry<ActivityEntryFields>(id);
+  const entry = await client.getEntry<ActivityEntryFields>(id);
 
-    if (entry.sys.contentType.sys.id !== "activitiy")
-      throw new InvalidContentTypeError();
-    if (!entry) throw new EntryNotFoundError();
-    if (!entry.fields.additionalImages) return { entry };
+  if (entry.sys.contentType.sys.id !== "activitiy")
+    throw new InvalidContentTypeError();
+  if (!entry) throw new EntryNotFoundError();
+  if (!entry.fields.additionalImages) return { entry };
 
-    const promises = entry.fields.additionalImages.map(async (image) => {
-      const asset = await client.getAsset(image.sys.id);
-      return {
-        description: asset.fields.description,
-        url: asset.fields.file.url,
-      };
-    });
-    const images = await Promise.all(promises);
+  const promises = entry.fields.additionalImages.map(async (image) => {
+    const asset = await client.getAsset(image.sys.id);
     return {
-      entry,
-      images,
+      description: asset.fields.description,
+      url: asset.fields.file.url,
     };
-  } catch (e) {
-    throw e;
-  }
+  });
+  const images = await Promise.all(promises);
+  return {
+    entry,
+    images,
+  };
 }
 
 export async function fetchEvent(id: string): Promise<EventData> {
-  try {
-    const entry = await client.getEntry<EventEntryFields>(id);
+  const entry = await client.getEntry<EventEntryFields>(id);
 
-    if (entry.sys.contentType.sys.id !== "event")
-      throw new InvalidContentTypeError();
-    if (!entry) throw new EntryNotFoundError();
-    if (!entry.fields.images) return { entry };
+  if (entry.sys.contentType.sys.id !== "event")
+    throw new InvalidContentTypeError();
+  if (!entry) throw new EntryNotFoundError();
+  if (!entry.fields.images) return { entry };
 
-    const promises = entry.fields.images.map(async (image) => {
-      const asset = await client.getAsset(image.sys.id);
-      return {
-        description: asset.fields.description,
-        url: asset.fields.file.url,
-      };
-    });
-    const images = await Promise.all(promises);
+  const promises = entry.fields.images.map(async (image) => {
+    const asset = await client.getAsset(image.sys.id);
     return {
-      entry,
-      images,
+      description: asset.fields.description,
+      url: asset.fields.file.url,
     };
-  } catch (e) {
-    throw e;
-  }
+  });
+  const images = await Promise.all(promises);
+  return {
+    entry,
+    images,
+  };
 }

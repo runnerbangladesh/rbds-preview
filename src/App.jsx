@@ -1,6 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import { Switch } from "react-router";
+import { Route } from "wouter";
 import Activity from "./pages/activity";
 import Home from "./pages/home";
 import Event from "./pages/event";
@@ -17,19 +16,15 @@ function App() {
         loadingTimeout: 3000,
       }}
     >
-      <Router>
-        <Switch>
-          <Route exact path="/activity/:id">
-            <Activity />
-          </Route>
-          <Route exact path="/event/:id">
-            <Event />
-          </Route>
-          <Route path="*" exact>
-            <Home />
-          </Route>
-        </Switch>
-      </Router>
+      <Route path="/activity/:id">
+        <Activity />
+      </Route>
+      <Route path="/event/:id">
+        <Event />
+      </Route>
+      <Route>
+        <Home />
+      </Route>
     </SWRConfig>
   );
 }

@@ -1,5 +1,3 @@
-import React from "react";
-
 const LoadingComponent = ({ loadingSlow = false }) => {
   document.title = "Loading preview...";
   return (

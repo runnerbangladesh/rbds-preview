@@ -1,5 +1,3 @@
-import React from "react";
-
 const phrases = [
   "Nothing to see here.",
   "Uh-doy!",
