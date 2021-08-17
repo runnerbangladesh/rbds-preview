@@ -1,15 +1,17 @@
-import { useState, Fragment } from "react";
-import { fetchActivity } from "../contentful/client";
-import { useRoute } from "wouter";
-import "./activity.scss";
-import { Container, Row, Col } from "react-bootstrap";
-import marked from "marked";
-import Masonry from "react-masonry-css";
 import { format } from "date-fns/fp";
-import Carousel, { ModalGateway, Modal } from "react-images";
+import marked from "marked";
+import { Fragment, useState } from "react";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Carousel, { Modal, ModalGateway } from "react-images";
+import Masonry from "react-masonry-css";
 import useSWR from "swr";
+import { useRoute } from "wouter";
 import ErrorComponent from "../components/ErrorComponent";
 import LoadingComponent from "../components/LoadingComponent";
+import { fetchActivity } from "../contentful/client";
+import "./activity.scss";
 
 const Activity = () => {
   const [, params] = useRoute("/activity/:id");
@@ -20,7 +22,7 @@ const Activity = () => {
     onLoadingSlow: () => setLoadingSlow(true),
   });
 
-  const openLightbox = (index) => {
+  const openLightbox = (index: number) => {
     setCurrentImage(index);
     setModalIsOpen(true);
   };
@@ -33,18 +35,20 @@ const Activity = () => {
     return <LoadingComponent loadingSlow={loadingSlow} />;
   }
 
-  document.title = "Preview — " + data.entry.fields.title;
-  const parsedBody = marked(data.entry.fields.articleBody ?? "");
-  const parsedDate = new Date(data.entry.fields.date);
+  const entry = data.entry.fields;
+
+  document.title = "Preview — " + entry.title;
+  const parsedBody = marked(entry.articleBody ?? "");
+  const parsedDate = new Date(entry.date);
 
   return (
     <Fragment>
       <header className="masthead mb-md-2">
-        <Container className="container">
-          <Row className="row">
+        <Container>
+          <Row>
             <Col lg={8} md={10} className="mx-auto">
               <div className="post-heading">
-                <h1>{data.entry.fields.title}</h1>
+                <h1>{entry.title}</h1>
                 <span className="meta">
                   {format("d MMMM yyyy", parsedDate)}
                 </span>
@@ -57,7 +61,13 @@ const Activity = () => {
       <article>
         {data.images && (
           <Masonry
-            breakpointCols={{ default: 3, 1100: 3, 700: 2, 500: 1 }}
+            breakpointCols={
+              data.images.length === 1
+                ? { default: 1 }
+                : data.images.length <= 6 && data.images.length % 2 === 0
+                ? { default: 2, 640: 1 }
+                : { default: 4, 1440: 3, 1280: 2, 640: 1 }
+            }
             className="my-masonry-grid px-md-5 pt-md-5 p-3"
             columnClassName="my-masonry-grid_column"
           >
@@ -72,7 +82,7 @@ const Activity = () => {
               >
                 <img
                   className="gallery-image rounded fit-cover"
-                  src={image.url + "?w=800&fm=webp&q=70"}
+                  src={image.url + "?w=1200&fm=webp&q=70"}
                   alt={image.description}
                   loading="lazy"
                 />
@@ -102,7 +112,11 @@ const Activity = () => {
             <Modal onClose={() => setModalIsOpen(false)}>
               <Carousel
                 views={data.images.map((img) => ({
-                  src: img.url + "?w=800&fm=webp&q=70",
+                  source: {
+                    regular: img.url + "?w=800&fm=webp&q=70",
+                    fullscreen: img.url,
+                    thumbnail: img.url + "?w=250&fm=webp&q=50",
+                  },
                   caption: img.description,
                   alt: img.description,
                 }))}

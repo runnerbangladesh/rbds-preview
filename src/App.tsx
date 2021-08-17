@@ -1,4 +1,3 @@
-import React from "react";
 import { Route } from "wouter";
 import Activity from "./pages/activity";
 import Home from "./pages/home";
@@ -9,8 +8,7 @@ function App() {
   return (
     <SWRConfig
       value={{
-        refreshInterval:
-          process.env.NODE_ENV === "production" ? 10000 : undefined,
+        refreshInterval: import.meta.env.PROD ? 10000 : undefined,
         shouldRetryOnError: false,
         errorRetryCount: 2,
         loadingTimeout: 3000,

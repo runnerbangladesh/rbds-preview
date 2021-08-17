@@ -1,9 +1,10 @@
-/*! purgecss start ignore */
+/* purgecss start ignore */
 $bg-color: #222;
 $fg-color: #ddd;
 $title-color: #ccc;
 $accent-color: #f59c22;
-$title-font: "Fira Sans", sans-serif;
+$title-font: "Roboto Slab", serif;
+$body-font: "Fira Sans", sans-serif;
 
 :root {
   --accent-color: #{$accent-color};
@@ -49,14 +50,22 @@ $spacers: (
     1rem * 10,
   ),
 );
-/*! purgecss end ignore */
+/* purgecss end ignore */
 
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
-/*! purgecss start ignore */
+/* purgecss start ignore */
 
 body {
   background-color: $bg-color;
   color: $fg-color;
+  font-family: $body-font;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: $title-font;
 }
 .link,

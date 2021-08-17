@@ -4,7 +4,6 @@ const phrases = [
   "You should be somewhere else.",
   "This must be a mistake.",
   "Toit barry!",
-  "Oopsie doopsie!",
 ];
 
 const Home = () => {

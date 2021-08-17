@@ -8,6 +8,8 @@ interface ImageData {
 
 interface ActivityEntryFields {
   title: string;
+  articleBody: string;
+  date: string;
   additionalImages: contentful.Asset[] | undefined;
 }
 interface EventEntryFields {
@@ -44,8 +46,8 @@ class EntryNotFoundError extends Error {
 }
 
 const client = contentful.createClient({
-  accessToken: process.env.REACT_APP_ACCESS_TOKEN as string,
-  space: process.env.REACT_APP_SPACE_ID as string,
+  accessToken: import.meta.env.VITE_ACCESS_TOKEN as string,
+  space: import.meta.env.VITE_SPACE_ID as string,
   host: "preview.contentful.com",
 });
 

@@ -1,13 +1,13 @@
-import { useState, Fragment } from "react";
-import { useRoute } from "wouter";
+import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
+import { format } from "date-fns/fp";
+import { Fragment, useState } from "react";
+import { IconContext } from "react-icons";
+import { FaClock, FaFacebook, FaMapMarkerAlt } from "react-icons/fa";
 import useSWR from "swr";
-import { fetchEvent } from "../contentful/client";
+import { useRoute } from "wouter";
 import ErrorComponent from "../components/ErrorComponent";
 import LoadingComponent from "../components/LoadingComponent";
-import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
-import { IconContext } from "react-icons";
-import { format } from "date-fns/fp";
-import { FaFacebook, FaMapMarkerAlt, FaClock } from "react-icons/fa";
+import { fetchEvent } from "../contentful/client";
 import "./event.scss";
 
 const formatDate = format("cccc, d MMMM yyyy");
@@ -30,10 +30,10 @@ const Event = () => {
 
   const entry = data.entry.fields;
 
-  document.title = "Preview — " + data.entry.fields.title;
-  const parsedStartDate = new Date(data.entry.fields.eventStartDate);
-  const parsedEndDate = data.entry.fields.eventEndDate
-    ? new Date(data.entry.fields.eventEndDate)
+  document.title = "Preview — " + entry.title;
+  const parsedStartDate = new Date(entry.eventStartDate);
+  const parsedEndDate = entry.eventEndDate
+    ? new Date(entry.eventEndDate)
     : undefined;
 
   function renderDates() {
@@ -99,7 +99,7 @@ const Event = () => {
           </span>
         </IconContext.Provider>
         <div className="e-body">
-          {documentToReactComponents(data.entry.fields.description)}
+          {documentToReactComponents(entry.description)}
         </div>
       </div>
     </Fragment>
