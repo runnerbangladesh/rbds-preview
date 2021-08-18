@@ -20,14 +20,5 @@
     "@rescript/react",
     "@ryyppy/rescript-promise",
     "reason-date-fns"
-  ],
-  "gentypeconfig": {
-    "language": "typescript",
-    "shims": {},
-    "generatedFileExtension": ".gen.ts",
-    "debug": {
-      "all": false,
-      "basic": false
-    }
-  }
+  ]
 }
