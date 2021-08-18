@@ -8,6 +8,7 @@
     "@ryyppy/rescript-promise": "^2.1.0",
     "bootstrap": "^5.1.0",
     "contentful": "^8.4.2",
+    "date-fns": "^2.23.0",
     "marked": "^3.0.0",
     "react": "^17.0.2",
     "react-bootstrap": "^1.6.1",
@@ -22,8 +23,9 @@
     "typeface-roboto-slab": "^1.1.13"
   },
   "scripts": {
-    "build": "vite build",
-    "dev": "vite",
+    "vite:build": "vite build",
+    "vite:dev": "vite",
+    "build": "rescript build && vite build",
     "re:build": "rescript",
     "re:dev": "rescript build -w"
   },
