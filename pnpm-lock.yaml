@@ -3,6 +3,8 @@ lockfileVersion: 5.3
 specifiers:
   '@contentful/rich-text-react-renderer': ^15.2.0
   '@contentful/rich-text-types': ^15.1.0
+  '@rescript/react': ^0.10.3
+  '@ryyppy/rescript-promise': ^2.1.0
   '@types/marked': ^2.0.4
   '@types/react': ^17.0.18
   '@types/react-dom': ^17.0.9
@@ -13,6 +15,7 @@ specifiers:
   contentful: ^8.4.2
   date-fns: ^2.23.0
   eslint: ^7.32.0
+  gentype: ^4.1.0
   marked: ^3.0.0
   react: ^17.0.2
   react-bootstrap: ^1.6.1
@@ -20,6 +23,8 @@ specifiers:
   react-icons: ^4.2.0
   react-images: ^1.1.7
   react-masonry-css: ^1.0.16
+  reason-date-fns: ^1.0.2
+  rescript: ^9.1.4
   sass: 1.38.0
   swr: ^0.5.6
   typeface-fira-sans: ^1.1.13
@@ -31,6 +36,8 @@ specifiers:
 
 dependencies:
   '@contentful/rich-text-react-renderer': 15.2.0_react-dom@17.0.2+react@17.0.2
+  '@rescript/react': 0.10.3_react-dom@17.0.2+react@17.0.2
+  '@ryyppy/rescript-promise': 2.1.0
   bootstrap: 5.1.0
   contentful: 8.4.2
   date-fns: 2.23.0
@@ -41,6 +48,7 @@ dependencies:
   react-icons: 4.2.0_react@17.0.2
   react-images: 1.1.7_aafffb2bfb54f6a4ac6b988db6a316d2
   react-masonry-css: 1.0.16_react@17.0.2
+  reason-date-fns: 1.0.2_date-fns@2.23.0
   sass: 1.38.0
   swr: 0.5.6_react@17.0.2
   typeface-fira-sans: 1.1.13
@@ -56,6 +64,8 @@ devDependencies:
   '@typescript-eslint/parser': 4.29.2_eslint@7.32.0+typescript@4.3.5
   '@vitejs/plugin-react-refresh': 1.3.6
   eslint: 7.32.0
+  gentype: 4.1.0
+  rescript: 9.1.4
   typescript: 4.3.5
   vite: 2.5.0
   vite-react-jsx: 1.1.2_vite@2.5.0
@@ -427,6 +437,16 @@ packages:
     resolution: {integrity: sha512-xDu17cEfh7Kid/d95kB6tZsLOmSWKCZKtprnhVepjsSaCij+lM3mItSJDuuHDMbCWTh8Ejmebwb+KONcCJ0eXQ==}
     dev: false
 
+  /@rescript/react/0.10.3_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-Lf9rzrR3bQPKJjOK3PBRa/B3xrJ7CqQ1HYr9VHPVxJidarIJJFZBhj0Dg1uZURX+Wg/xiP0PHFxXmdj2bK8Vxw==}
+    peerDependencies:
+      react: '>=16.8.1'
+      react-dom: '>=16.8.1'
+    dependencies:
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
+
   /@restart/context/2.1.4_react@17.0.2:
     resolution: {integrity: sha512-INJYZQJP7g+IoDUh/475NlGiTeMfwTXUEr3tmRneckHIxNolGOW9CTq83S8cxq0CgJwwcMzMJFchxvlwe7Rk8Q==}
     peerDependencies:
@@ -451,6 +471,10 @@ packages:
       estree-walker: 2.0.2
       picomatch: 2.3.0
     dev: true
+
+  /@ryyppy/rescript-promise/2.1.0:
+    resolution: {integrity: sha512-+dW6msBrj2Lr2hbEMX+HoWCvN89qVjl94RwbYWJgHQuj8jm/izdPC0YzxgpGoEFdeAEW2sOozoLcYHxT6o5WXQ==}
+    dev: false
 
   /@types/domhandler/2.4.1:
     resolution: {integrity: sha512-cfBw6q6tT5sa1gSPFSRKzF/xxYrrmeiut7E0TxNBObiLSBTuFEHibcfEe3waQPEDbqBsq+ql/TOniw65EyDFMA==}
@@ -1292,6 +1316,12 @@ packages:
     engines: {node: '>=6.9.0'}
     dev: true
 
+  /gentype/4.1.0:
+    resolution: {integrity: sha512-M3Dqd2tokJ7X1KLyMP0bqwk/TvOPI5hYW24j2Jy5RMToWfdKvdqoxWsMTWuPxWauSi/CBQjJS/AOhqsd0Sy1Mw==}
+    hasBin: true
+    requiresBuild: true
+    dev: true
+
   /get-intrinsic/1.1.1:
     resolution: {integrity: sha512-kWZrnVM42QCiEA2Ig1bG8zjoIMOgxWwYCEeNdwY6Tv/cOSeGpcoX4pXHfKUxNKVoArnrEr2e9srnAxxGIraS9Q==}
     dependencies:
@@ -2092,6 +2122,14 @@ packages:
       picomatch: 2.3.0
     dev: false
 
+  /reason-date-fns/1.0.2_date-fns@2.23.0:
+    resolution: {integrity: sha512-GNImHrZrRoyXnhDB8/SxT0jIvvv67xdPhY7qb8ai4Ka8FGbmQjt7eilpbCg8No0D4icYTiwvaT7XckWgJqrVxQ==}
+    peerDependencies:
+      date-fns: ^2.16.1
+    dependencies:
+      date-fns: 2.23.0
+    dev: false
+
   /regenerator-runtime/0.13.9:
     resolution: {integrity: sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==}
     dev: false
@@ -2104,6 +2142,12 @@ packages:
   /require-from-string/2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
+    dev: true
+
+  /rescript/9.1.4:
+    resolution: {integrity: sha512-aXANK4IqecJzdnDpJUsU6pxMViCR5ogAxzuqS0mOr8TloMnzAjJFu63fjD6LCkWrKAhlMkFFzQvVQYaAaVkFXw==}
+    hasBin: true
+    requiresBuild: true
     dev: true
 
   /resize-observer-polyfill/1.5.0:
