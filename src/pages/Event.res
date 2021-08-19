@@ -10,7 +10,7 @@ open Extensions
 let formatDate = DateFns.format("cccc, d MMMM yyyy")
 let formatTime = DateFns.format("p")
 
-let renderDates = (startDate: Js.Date.t, endDate: option<Js.Date.t>) => {
+let renderDates = (startDate, endDate) => {
   switch endDate {
   | None => <span> {formatDate(startDate)->string} </span>
   | Some(endDate) if endDate->Js.Date.getDay != startDate->Js.Date.getDay =>
@@ -19,7 +19,7 @@ let renderDates = (startDate: Js.Date.t, endDate: option<Js.Date.t>) => {
   }
 }
 
-let renderTimes = (startDate: Js.Date.t, endDate: option<Js.Date.t>) => {
+let renderTimes = (startDate, endDate) => {
   switch endDate {
   | None => <span> {formatTime(startDate)->string} </span>
   | Some(endDate) =>
@@ -42,7 +42,7 @@ let make = (~id: string) => {
   | (None, None) => <LoadingComponent loadingSlow={loadingSlow} />
   | (None, Some(err)) =>
     Js.Console.error(error)
-    <ErrorComponent error={Other(err["message"])} />
+    <ErrorComponent error={Other(Js.Exn.message(err)->Belt.Option.getWithDefault("Error!"))} />
   | (Some(data: result<contentData<eventEntryFields>, errors>), None) =>
     switch data {
     | Error(err) => <ErrorComponent error={err} />

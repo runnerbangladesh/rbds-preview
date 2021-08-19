@@ -3,6 +3,7 @@ open Extensions
 
 @react.component
 let make = (~error: errors) => {
+  document["title"] = `Preview ― An error occurred`
   <div className="error">
     {"Four-oh-four!"->string}
     <br />

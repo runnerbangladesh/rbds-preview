@@ -32,7 +32,7 @@ let make = (~id: string) => {
 
   | (None, Some(err)) =>
     Js.Console.error(err)
-    <ErrorComponent error={Other(err["message"])} />
+    <ErrorComponent error={Other(Js.Exn.message(err)->Belt.Option.getWithDefault("Error!"))} />
 
   | (Some(data: result<contentData<activityEntryFields>, errors>), None) =>
     switch data {

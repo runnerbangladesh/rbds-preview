@@ -1,4 +1,4 @@
-type swrReturn<'data, 'error> = {data: option<'data>, error: option<'error>}
+type swrReturn<'data, 'error> = {data: option<'data>, error: option<Js.Exn.t>}
 
 @module("swr")
 external useSWR: ('arg, 'arg => Promise.t<'return>, 'config) => swrReturn<'return, 'error> =
