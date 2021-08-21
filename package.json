@@ -5,6 +5,7 @@
   "dependencies": {
     "@contentful/rich-text-react-renderer": "^15.2.0",
     "@rescript/react": "^0.10.3",
+    "rescript-swr": "^0.1.0",
     "@ryyppy/rescript-promise": "^2.1.0",
     "bootstrap": "^5.1.0",
     "contentful": "^8.4.2",
@@ -27,7 +28,8 @@
     "vite:dev": "vite",
     "build": "rescript build && vite build",
     "re:build": "rescript",
-    "re:dev": "rescript build -w"
+    "re:dev": "rescript build -w",
+    "re:clean": "rescript clean"
   },
   "browserslist": {
     "production": [

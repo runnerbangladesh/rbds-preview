@@ -1,20 +1,19 @@
-open SWR
-
 @react.component
 let make = () => {
   let url = RescriptReactRouter.useUrl()
 
-  <SWRConfig
-    value={
-      "refreshInterval": %raw(`import.meta.env.PROD ? 10000 : undefined`),
-      "shouldRetryOnError": false,
-      "errorRetryCount": 2,
-      "loadingTimeout": 3000,
-    }>
+  <Swr.SwrConfig
+    config={Swr.Options.make(
+      ~shouldRetryOnError=true,
+      ~errorRetryCount=2,
+      ~loadingTimeout=3000,
+      ~refreshInterval=%raw(`import.meta.env.PROD ? 10000 : undefined`),
+      (),
+    )}>
     {switch url.path {
     | list{"activity", id} => <Activity id />
     | list{"event", id} => <Event id />
     | _ => <Home />
     }}
-  </SWRConfig>
+  </Swr.SwrConfig>
 }

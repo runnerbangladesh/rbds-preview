@@ -4,37 +4,28 @@ open Client
 open ReasonDateFns
 open ReactImages
 open ReactImages.Carousel
-open SWR
 open Extensions
+
+//     "rescript-swr": "git+https://github.com/runnerbangladesh/rescript-swr#87bb736",
 
 %%raw(`import "./activity.scss"`)
 
 @react.component
 let make = (~id: string) => {
-  let (loadingSlow, setLoadingSlow) = useState(() => false)
-  let (modalIsOpen, setModalIsOpen) = useState(() => false)
-  let (currentImage, setCurrentImage) = useState(() => 0)
-  let {data, error} = useSWR(
-    id,
-    fetchActivity,
-    {
-      "onLoadingSlow": () => setLoadingSlow(_ => true),
-    },
-  )
+  let (loadingSlow, setLoadingSlow) = useState(_ => false)
+  let (modalIsOpen, setModalIsOpen) = useState(_ => false)
+  let (currentImage, setCurrentImage) = useState(_ => 0)
+  let {data} = Swr.useSWR(id, fetchActivity, ~onLoadingSlow=(_, _) => setLoadingSlow(_ => true))
 
   let openLightbox = index => {
     setCurrentImage(_ => index)
     setModalIsOpen(_ => true)
   }
 
-  switch (data, error) {
-  | (None, None) => <LoadingComponent loadingSlow={loadingSlow} />
+  switch data {
+  | None => <LoadingComponent loadingSlow={loadingSlow} />
 
-  | (None, Some(err)) =>
-    Js.Console.error(err)
-    <ErrorComponent error={Other(Js.Exn.message(err)->Belt.Option.getWithDefault("Error!"))} />
-
-  | (Some(data: result<contentData<activityEntryFields>, errors>), None) =>
+  | Some(data) =>
     switch data {
     | Error(err) => <ErrorComponent error={err} />
     | Ok(data) =>
@@ -74,7 +65,7 @@ let make = (~id: string) => {
                     key={index->Belt.Int.toString}
                     role="button"
                     onClick={_ => openLightbox(index)}
-                    onKeyPress={e => Js.Console.log("Keypress registered")}
+                    onKeyPress={e => openLightbox(index)}
                     tabIndex={0}
                     className="gallery-image-container shadow">
                     <img
@@ -128,6 +119,6 @@ let make = (~id: string) => {
       </>
     }
 
-  | (_, _) => <div> {"What?"->string} </div>
+  // | () => <div> {"What?"->string} </div>
   }
 }

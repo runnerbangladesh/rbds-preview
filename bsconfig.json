@@ -19,6 +19,7 @@
   "bs-dependencies": [
     "@rescript/react",
     "@ryyppy/rescript-promise",
-    "reason-date-fns"
+    "reason-date-fns",
+    "rescript-swr"
   ]
 }

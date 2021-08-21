@@ -17,6 +17,7 @@ specifiers:
   react-masonry-css: ^1.0.16
   reason-date-fns: ^1.0.2
   rescript: ^9.1.4
+  rescript-swr: ^0.1.0
   sass: 1.38.0
   swr: ^0.5.6
   typeface-fira-sans: ^1.1.13
@@ -40,6 +41,7 @@ dependencies:
   react-images: 1.1.7_react-dom@17.0.2+react@17.0.2
   react-masonry-css: 1.0.16_react@17.0.2
   reason-date-fns: 1.0.2_date-fns@2.23.0
+  rescript-swr: 0.1.0_react-dom@17.0.2+react@17.0.2
   sass: 1.38.0
   swr: 0.5.6_react@17.0.2
   typeface-fira-sans: 1.1.13
@@ -1425,6 +1427,16 @@ packages:
 
   /regenerator-runtime/0.13.9:
     resolution: {integrity: sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==}
+    dev: false
+
+  /rescript-swr/0.1.0_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-ppMmLNtz4zrnAAh2hpOUlohAeSoy3437k3FJgkez2sQDkU89roEdjFgmn4fqNEscRu46sWkhQpOSZ5Cy9x7vAQ==}
+    dependencies:
+      '@rescript/react': 0.10.3_react-dom@17.0.2+react@17.0.2
+      swr: 0.5.6_react@17.0.2
+    transitivePeerDependencies:
+      - react
+      - react-dom
     dev: false
 
   /rescript/9.1.4:

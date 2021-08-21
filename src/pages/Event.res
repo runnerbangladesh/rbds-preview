@@ -2,7 +2,6 @@ open React
 open Client
 open ReasonDateFns
 open ReactIcons
-open SWR
 open Extensions
 
 %%raw(`import "./event.scss"`)
@@ -30,20 +29,11 @@ let renderTimes = (startDate, endDate) => {
 @react.component
 let make = (~id: string) => {
   let (loadingSlow, setLoadingSlow) = useState(() => false)
-  let {data, error} = useSWR(
-    id,
-    fetchEvent,
-    {
-      "onLoadingSlow": () => setLoadingSlow(_ => true),
-    },
-  )
+  let {data} = Swr.useSWR(id, fetchEvent, ~onLoadingSlow=(_, _) => setLoadingSlow(_ => true))
 
-  switch (data, error) {
-  | (None, None) => <LoadingComponent loadingSlow={loadingSlow} />
-  | (None, Some(err)) =>
-    Js.Console.error(error)
-    <ErrorComponent error={Other(Js.Exn.message(err)->Belt.Option.getWithDefault("Error!"))} />
-  | (Some(data: result<contentData<eventEntryFields>, errors>), None) =>
+  switch data {
+  | None => <LoadingComponent loadingSlow={loadingSlow} />
+  | Some(data) =>
     switch data {
     | Error(err) => <ErrorComponent error={err} />
     | Ok(data) => {
@@ -89,6 +79,5 @@ let make = (~id: string) => {
         </>
       }
     }
-  | (_, _) => <div> {string("What?")} </div>
   }
 }

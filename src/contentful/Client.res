@@ -11,7 +11,7 @@ type activityEntryFields = {
 }
 type eventEntryFields = {
   title: string,
-  description: Js.Json.t,
+  description: unit,
   eventEndDate: option<string>,
   eventStartDate: string,
   facebookLink: string,
@@ -28,7 +28,8 @@ let client = createClient({
 })
 
 let fetchActivity = (id: string): Promise.t<result<contentData<activityEntryFields>, errors>> => {
-  client.getEntry(. id)->Promise.then(entry => {
+  client.getEntry(. id)
+  ->Promise.then(entry => {
     switch entry {
     | None => EntryNotFound->Error->Promise.resolve
     | Some(entry: contentfulEntry<activityEntryFields>) =>
@@ -57,10 +58,18 @@ let fetchActivity = (id: string): Promise.t<result<contentData<activityEntryFiel
       }
     }
   })
+  ->Promise.catch(e => {
+    Js.Console.error(e)
+    switch e {
+    | Promise.JsError(err) => Other(JsError(err))->Error->Promise.resolve
+    | _ => Other(String("Unknown."))->Error->Promise.resolve
+    }
+  })
 }
 
 let fetchEvent = (id: string): Promise.t<result<contentData<eventEntryFields>, errors>> =>
-  client.getEntry(. id)->Promise.then(entry =>
+  client.getEntry(. id)
+  ->Promise.then(entry =>
     switch entry {
     | None => EntryNotFound->Error->Promise.resolve
     | Some(entry: contentfulEntry<eventEntryFields>) =>
@@ -88,3 +97,10 @@ let fetchEvent = (id: string): Promise.t<result<contentData<eventEntryFields>, e
       }
     }
   )
+  ->Promise.catch(e => {
+    Js.Console.error(e)
+    switch e {
+    | Promise.JsError(err) => Other(JsError(err))->Error->Promise.resolve
+    | _ => Other(String("Unknown."))->Error->Promise.resolve
+    }
+  })

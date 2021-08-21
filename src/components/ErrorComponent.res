@@ -11,7 +11,12 @@ let make = (~error: errors) => {
       {(switch error {
       | InvalidContentType => "Content type is invalid."
       | EntryNotFound => "Entry not found."
-      | Other(msg) => msg
+      | Other(String(msg)) => msg
+      | Other(JsError(exn)) =>
+        switch Js.Exn.message(exn) {
+        | Some(msg) => msg
+        | None => "Unknown error occurred."
+        }
       } ++ " Contact administrator if error persists.")->string}
     </small>
   </div>
