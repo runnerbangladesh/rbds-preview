@@ -1,7 +1,7 @@
 @module("react-masonry-css") @react.component
 external make: (
   ~children: React.element,
-  ~breakpointCols: 'breakpoint=?,
+  ~breakpointCols: {..}=?,
   ~className: string=?,
   ~columnClassName: string=?,
 ) => React.element = "default"

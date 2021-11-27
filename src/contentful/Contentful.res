@@ -1,3 +1,5 @@
+type t
+
 type contentTypeLink = {"type": [#Link], "linkType": [#ContentType], "id": string}
 
 type sys = {
@@ -32,13 +34,11 @@ type clientOpts = {
   host: string,
 }
 
-type contentfulClient<'field> = {
-  getEntry: (. string) => Promise.t<option<contentfulEntry<'field>>>,
-  getAsset: (. string) => Promise.t<contentfulAsset>,
-}
-
 @module("contentful")
-external createClient: clientOpts => contentfulClient<'field> = "createClient"
+external createClient: clientOpts => t = "createClient"
+
+@send external getEntry: (t, string) => Promise.t<option<contentfulEntry<'field>>> = "getEntry"
+@send external getAsset: (t, string) => Promise.t<contentfulAsset> = "getAsset"
 
 @module("@contentful/rich-text-react-renderer")
 external documentToReactComponents: 'obj => React.element = "documentToReactComponents"

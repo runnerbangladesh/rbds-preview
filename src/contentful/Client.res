@@ -28,7 +28,8 @@ let client = createClient({
 })
 
 let fetchActivity = (id: string): Promise.t<result<contentData<activityEntryFields>, errors>> => {
-  client.getEntry(. id)
+  client
+  ->getEntry(id)
   ->Promise.then(entry => {
     switch entry {
     | None => EntryNotFound->Error->Promise.resolve
@@ -40,7 +41,7 @@ let fetchActivity = (id: string): Promise.t<result<contentData<activityEntryFiel
         | None => {entry: entry, images: []}->Ok->Promise.resolve
         | Some(additionalImages) => {
             let imageAssetPromises = additionalImages->Belt.Array.map(image => {
-              let imageAsset = client.getAsset(. image["sys"]["id"])
+              let imageAsset = client->getAsset(image["sys"]["id"])
               imageAsset->Promise.then(image => {
                 Promise.resolve({
                   description: image["fields"]["description"],
@@ -68,7 +69,8 @@ let fetchActivity = (id: string): Promise.t<result<contentData<activityEntryFiel
 }
 
 let fetchEvent = (id: string): Promise.t<result<contentData<eventEntryFields>, errors>> =>
-  client.getEntry(. id)
+  client
+  ->getEntry(id)
   ->Promise.then(entry =>
     switch entry {
     | None => EntryNotFound->Error->Promise.resolve
@@ -80,7 +82,9 @@ let fetchEvent = (id: string): Promise.t<result<contentData<eventEntryFields>, e
         | None => {entry: entry, images: []}->Ok->Promise.resolve
         | Some(eventImages) => {
             let imagePromises = eventImages->Belt.Array.map(image => {
-              client.getAsset(. image["sys"]["id"])->Promise.thenResolve(image => {
+              client
+              ->getAsset(image["sys"]["id"])
+              ->Promise.thenResolve(image => {
                 {
                   description: image["fields"]["description"],
                   url: image["fields"]["file"]["url"],

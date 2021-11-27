@@ -29,7 +29,11 @@ let renderTimes = (startDate, endDate) => {
 @react.component
 let make = (~id: string) => {
   let (loadingSlow, setLoadingSlow) = useState(() => false)
-  let {data} = Swr.useSWR(id, fetchEvent, ~onLoadingSlow=(_, _) => setLoadingSlow(_ => true))
+  let {data} = Swr.useSWR_config(
+    id,
+    fetchEvent,
+    Swr.swrConfiguration(~onLoadingSlow=(_, _) => setLoadingSlow(_ => true), ()),
+  )
 
   switch data {
   | None => <LoadingComponent loadingSlow={loadingSlow} />
