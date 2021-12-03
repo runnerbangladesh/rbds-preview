@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif;
+  }
+  h1 {
+    @apply text-2xl;
+  }
+  h2 {
+    @apply text-xl;
+  }
+  a {
+    @apply text-accent;
+  }
+  a:hover {
+    @apply text-white;
+  }
+  body {
+    @apply bg-bg text-fg;
+  }
+  small {
+    @apply text-sm text-gray-500;
+  }
+  em {
+    @apply text-accent;
+  }
+  b,
+  strong {
+    @apply text-gray-500;
+  }
+  p {
+    @apply mb-4;
+  }
+  ul {
+    @apply list-disc;
+  }
+  .e-meta > span {
+    @apply flex items-center mb-1 align-middle;
+  }
+  .e-meta:last-of-type {
+    @apply mb-0;
+  }
+  .e-meta > span > a {
+    @apply inline-flex;
+  }
+}
+
+:root {
+  --accent-color: #f59c22;
+  --bg-color: #222;
+  --fg-color: #ddd;
+  --title-color: #ccc;
+  --title-font: "Roboto Slab", serif;
+  --body-font: "Fira Sans", sans-serif;
+}
+
+/* .article {
+  p {
+    line-height: 1.5;
+    margin-bottom: 20px;
+    font-size: 20px;
+    a {
+      text-decoration: underline;
+      color: #fff;
+      &:hover {
+        color: $accent-color;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  h1 {
+    font-size: 24pt;
+  }
+  h2 {
+    font-size: 20pt;
+  }
+  h3 {
+    font-size: 18pt;
+  }
+  h4 {
+    font-size: 16pt;
+  }
+  h5 {
+    font-size: 14pt;
+  }
+
+  blockquote {
+    font-style: italic;
+    color: #868e96;
+  }
+  code {
+    color: #eee;
+    background-color: #444;
+    padding: 5px;
+    border-radius: 5px;
+  }
+} */
+
+/* .loading {
+  padding: 2em;
+  font-size: 20pt;
+}
+.error {
+  padding: 2em;
+}
+.muted {
+  color: #777777;
+} */

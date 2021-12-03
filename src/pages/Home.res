@@ -2,7 +2,8 @@ open React
 
 let phrases = list{
   "Nothing to see here.",
-  "Uh-doy!",
+  "Haste Ye Back!",
+  "Osti!",
   "You should be somewhere else.",
   "This must be a mistake.",
   "Toit barry!",
@@ -14,7 +15,7 @@ let make = () => {
     Js.Math.random_int(0, Js.List.length(phrases))->Js.Int.toFloat,
   )
 
-  <div style={ReactDOMStyle.make(~padding="3em", ())}>
+  <div className="p-6">
     <h1>
       {switch Js.List.nth(phrases, random_index) {
       | Some(phrase) => phrase->string

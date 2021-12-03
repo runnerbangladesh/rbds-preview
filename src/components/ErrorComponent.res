@@ -4,9 +4,9 @@ open Extensions
 @react.component
 let make = (~error: errors) => {
   document["title"] = `Preview ― An error occurred`
-  <div className="error">
+  <div className="p-6">
     <h5> {"Four-oh-four!"->string} </h5>
-    <p>
+    <p className="leading-tight">
       <small className="muted">
         {switch error {
         | InvalidContentType => "Content type is invalid."

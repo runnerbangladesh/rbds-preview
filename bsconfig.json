@@ -20,6 +20,7 @@
     "@rescript/react",
     "@ryyppy/rescript-promise",
     "reason-date-fns",
-    "rescript-swr"
+    "rescript-swr",
+    "rescript-contentful"
   ]
 }

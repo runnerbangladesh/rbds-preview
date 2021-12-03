@@ -4,8 +4,6 @@ open ReasonDateFns
 open ReactIcons
 open Extensions
 
-%%raw(`import "./event.scss"`)
-
 let formatDate = DateFns.format("cccc, d MMMM yyyy")
 let formatTime = DateFns.format("p")
 
@@ -41,28 +39,31 @@ let make = (~id: string) => {
     switch data {
     | Error(err) => <ErrorComponent error={err} />
     | Ok(data) => {
-        let entry = data.entry.fields
+        let entry = data.entry["fields"]
         document["title"] = `Preview ― ` ++ entry.title
         let parsedStartDate = Js.Date.fromString(entry.eventStartDate)
         let parsedEndDate = entry.eventEndDate->Belt.Option.map(Js.Date.fromString)
 
         <>
-          <div className="e-main">
+          <div className="p-4 mx-52 flex flex-col flex-auto">
             {switch entry.images {
             | Some(images) =>
               <img
                 src={images[0]["fields"]["file"]["url"] ++ "?h=400&fm=webp&q=70"}
-                className="e-big-image"
+                className="max-w-full object-cover mb-4 rounded-lg shadow-lg"
               />
             | _ => null
             }}
-            <h1 className="e-heading"> {entry.title->string} </h1>
+            <h1 className="text-accent text-4xl leading-tight font-medium">
+              {entry.title->string}
+            </h1>
             <IconContext.Provider
               value={
                 color: "var(--accent-color)",
                 style: ReactDOMStyle.make(~marginRight="8px", ()),
               }>
-              <span className="e-meta">
+              <span className="text-md leading-tight font-light text-xl e-meta">
+                <span> {parsedStartDate->formatDate->string} </span>
                 <span> {renderDates(parsedStartDate, parsedEndDate)} </span>
                 {switch entry.eventVenue {
                 | Some(venue) => <span> <Fa.FaMapMarkerAlt /> {venue->string} </span>
@@ -76,8 +77,8 @@ let make = (~id: string) => {
                 </span>
               </span>
             </IconContext.Provider>
-            <div className="e-body">
-              {Contentful.documentToReactComponents(entry.description)}
+            <div className="pt-3 text-xl leading-normal">
+              {ContentfulReact.documentToReactComponents(entry.description)}
             </div>
           </div>
         </>

@@ -7,7 +7,7 @@ type activityEntryFields = {
   title: string,
   articleBody: string,
   date: string,
-  additionalImages: option<array<contentfulAsset>>,
+  additionalImages: option<array<asset>>,
 }
 type eventEntryFields = {
   title: string,
@@ -15,17 +15,20 @@ type eventEntryFields = {
   eventEndDate: option<string>,
   eventStartDate: string,
   facebookLink: string,
-  images: option<array<contentfulAsset>>,
+  images: option<array<asset>>,
   slug: string,
   eventVenue: option<string>,
 }
-type contentData<'fields> = {entry: contentfulEntry<'fields>, images: array<imageData>}
+type contentData<'fields> = {entry: entry<'fields>, images: array<imageData>}
 
-let client = createClient({
-  accessToken: %raw(`import.meta.env.VITE_ACCESS_TOKEN`),
-  space: %raw(`import.meta.env.VITE_SPACE_ID`),
-  host: "preview.contentful.com",
-})
+let client = createClient(
+  makeClientOpts(
+    ~accessToken=%raw(`import.meta.env.VITE_ACCESS_TOKEN`),
+    ~space=%raw(`import.meta.env.VITE_SPACE_ID`),
+    ~host="preview.contentful.com",
+    (),
+  ),
+)
 
 let fetchActivity = (id: string): Promise.t<result<contentData<activityEntryFields>, errors>> => {
   client
@@ -33,15 +36,15 @@ let fetchActivity = (id: string): Promise.t<result<contentData<activityEntryFiel
   ->Promise.then(entry => {
     switch entry {
     | None => EntryNotFound->Error->Promise.resolve
-    | Some(entry: contentfulEntry<activityEntryFields>) =>
-      if entry.sys["contentType"]["sys"]["id"] != "activitiy" {
+    | Some(entry: entry<activityEntryFields>) =>
+      if entry["sys"]["contentType"]["sys"]["id"] != "activitiy" {
         InvalidContentType->Error->Promise.resolve
       } else {
-        switch entry.fields.additionalImages {
+        switch entry["fields"].additionalImages {
         | None => {entry: entry, images: []}->Ok->Promise.resolve
         | Some(additionalImages) => {
-            let imageAssetPromises = additionalImages->Belt.Array.map(image => {
-              let imageAsset = client->getAsset(image["sys"]["id"])
+            let imageAssetPromises = additionalImages->Js.Array2.map(image => {
+              let imageAsset = client->getAsset(image["sys"]["id"], ())
               imageAsset->Promise.then(image => {
                 Promise.resolve({
                   description: image["fields"]["description"],
@@ -74,16 +77,16 @@ let fetchEvent = (id: string): Promise.t<result<contentData<eventEntryFields>, e
   ->Promise.then(entry =>
     switch entry {
     | None => EntryNotFound->Error->Promise.resolve
-    | Some(entry: contentfulEntry<eventEntryFields>) =>
-      if entry.sys["contentType"]["sys"]["id"] != "event" {
+    | Some(entry: entry<eventEntryFields>) =>
+      if entry["sys"]["contentType"]["sys"]["id"] != "event" {
         InvalidContentType->Error->Promise.resolve
       } else {
-        switch entry.fields.images {
+        switch entry["fields"].images {
         | None => {entry: entry, images: []}->Ok->Promise.resolve
         | Some(eventImages) => {
-            let imagePromises = eventImages->Belt.Array.map(image => {
+            let imagePromises = eventImages->Js.Array2.map(image => {
               client
-              ->getAsset(image["sys"]["id"])
+              ->getAsset(image["sys"]["id"], ())
               ->Promise.thenResolve(image => {
                 {
                   description: image["fields"]["description"],
