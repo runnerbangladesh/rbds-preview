@@ -5,10 +5,7 @@ open Extensions
 
 @react.component
 let make = (~id: string) => {
-  let (loadingSlow, setLoadingSlow) = useState(_ => false)
-  let {data} = Swr.useSWR_config(id, fetchActivity, Swr.swrConfiguration(~onLoadingSlow=(_, _) => {
-      setLoadingSlow(_ => true)
-    }, ()))
+  let {data, isValidating, loadingSlow} = Hooks.useData(id, fetchActivity)
 
   switch data {
   | None => <LoadingComponent loadingSlow={loadingSlow} />
@@ -22,6 +19,7 @@ let make = (~id: string) => {
         let parsedDate = Js.Date.fromString(entry.date)
 
         <>
+          {isValidating ? <OverlaySpinner /> : null}
           <header className="px-64 bg-no-repeat bg-center bg-scroll bg-cover relative">
             <div>
               <div className="row">

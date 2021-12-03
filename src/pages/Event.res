@@ -26,12 +26,7 @@ let renderTimes = (startDate, endDate) => {
 
 @react.component
 let make = (~id: string) => {
-  let (loadingSlow, setLoadingSlow) = useState(() => false)
-  let {data} = Swr.useSWR_config(
-    id,
-    fetchEvent,
-    Swr.swrConfiguration(~onLoadingSlow=(_, _) => setLoadingSlow(_ => true), ()),
-  )
+  let {data, isValidating, loadingSlow} = Hooks.useData(id, fetchEvent)
 
   switch data {
   | None => <LoadingComponent loadingSlow={loadingSlow} />
@@ -45,6 +40,7 @@ let make = (~id: string) => {
         let parsedEndDate = entry.eventEndDate->Belt.Option.map(Js.Date.fromString)
 
         <>
+          {isValidating ? <OverlaySpinner /> : null}
           <div className="p-4 mx-52 flex flex-col flex-auto">
             {switch entry.images {
             | Some(images) =>
