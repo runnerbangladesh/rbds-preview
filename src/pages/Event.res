@@ -17,10 +17,14 @@ let renderDates = (startDate, endDate) => {
 }
 
 let renderTimes = (startDate, endDate) => {
+  let formattedStart = formatTime(startDate)
   switch endDate {
-  | None => <span> {formatTime(startDate)->string} </span>
-  | Some(endDate) =>
-    <span> {(formatTime(startDate) ++ " to " ++ formatTime(endDate))->string} </span>
+  | None => <span> {formattedStart->string} </span>
+  | Some(endDate) => if endDate->Js.Date.getDay != startDate->Js.Date.getDay {
+      <span> {(formattedStart ++ " to " ++ formatTime(endDate))->string} </span>
+    } else {
+      <span> {formattedStart->string} </span>
+    }
   }
 }
 
@@ -62,13 +66,13 @@ let make = (~id: string) => {
                 <span> {parsedStartDate->formatDate->string} </span>
                 <span> {renderDates(parsedStartDate, parsedEndDate)} </span>
                 {switch entry.eventVenue {
-                | Some(venue) => <span> <Fa.FaMapMarkerAlt /> {venue->string} </span>
+                | Some(venue) => <span> <Fi.FaMapPin /> {venue->string} </span>
                 | None => null
                 }}
-                <span> <Fa.FaClock /> {renderTimes(parsedStartDate, parsedEndDate)} </span>
+                <span> <Fi.FiClock /> {renderTimes(parsedStartDate, parsedEndDate)} </span>
                 <span>
                   <a href={entry.facebookLink} rel="noopener noreferrer nofollow" target="_blank">
-                    <Fa.FaFacebook /> {" View on Facebook"->string}
+                    <Fi.FiFacebook /> {" View on Facebook"->string}
                   </a>
                 </span>
               </span>

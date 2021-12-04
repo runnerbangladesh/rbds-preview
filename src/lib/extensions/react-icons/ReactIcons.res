@@ -16,17 +16,17 @@ module IconContext = {
   }
 }
 
-module Fa = {
-  module FaMapMarkerAlt = {
-    @module("react-icons/fa") @react.component
-    external make: unit => React.element = "FaMapMarkerAlt"
+module Fi = {
+  module FaMapPin = {
+    @module("react-icons/fi") @react.component
+    external make: unit => React.element = "FiMapPin"
   }
-  module FaClock = {
-    @module("react-icons/fa") @react.component
-    external make: unit => React.element = "FaClock"
+  module FiClock = {
+    @module("react-icons/fi") @react.component
+    external make: unit => React.element = "FiClock"
   }
-  module FaFacebook = {
-    @module("react-icons/fa") @react.component
-    external make: unit => React.element = "FaFacebook"
+  module FiFacebook = {
+    @module("react-icons/fi") @react.component
+    external make: unit => React.element = "FiFacebook"
   }
 }
