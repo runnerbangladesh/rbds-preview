@@ -1,5 +1,9 @@
-type exns = String(string) | JsError(Js.Exn.t)
-type errors = InvalidContentType | EntryNotFound | Other(exns)
+open These
+
+exception InvalidContentType
+exception EntryNotFound
+
+type asyncStatus<'a> = Loading | Resolved('a)
 
 module Marked = {
   type t
@@ -15,9 +19,8 @@ module ContentfulReact = {
 @val external document: 'doc = "document"
 
 module Hooks = {
-  type useData<'data, 'error> = {
-    data: option<'data>,
-    error: 'error,
+  type useData<'data> = {
+    state: asyncStatus<These.t<'data, exn>>,
     isValidating: bool,
     loadingSlow: bool,
   }
@@ -31,6 +34,13 @@ module Hooks = {
         setLoadingSlow(._ => true)
       }, ()),
     )
-    {data: data, error: error, isValidating: isValidating, loadingSlow: loadingSlow}
+
+    let state = switch (data, error) {
+    | (None, None) => Loading
+    | (Some(data), None) => Resolved(This(data))
+    | (None, Some(error)) => Resolved(That(error))
+    | (Some(data), Some(error)) => Resolved(These(data, error))
+    }
+    {state: state, isValidating: isValidating, loadingSlow: loadingSlow}
   }
 }

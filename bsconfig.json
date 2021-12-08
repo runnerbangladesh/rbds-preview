@@ -21,6 +21,7 @@
     "@ryyppy/rescript-promise",
     "reason-date-fns",
     "rescript-swr",
-    "rescript-contentful"
+    "rescript-contentful",
+    "rescript-these"
   ]
 }

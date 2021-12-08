@@ -30,18 +30,18 @@ let client = createClient(
   ),
 )
 
-let fetchActivity = (id: string): Promise.t<result<contentData<activityEntryFields>, errors>> => {
+let fetchActivity = (id: string): Promise.t<contentData<activityEntryFields>> => {
   client
   ->getEntry(id)
   ->Promise.then(entry => {
     switch entry {
-    | None => EntryNotFound->Error->Promise.resolve
+    | None => EntryNotFound->Promise.reject
     | Some(entry: entry<activityEntryFields>) =>
       if entry["sys"]["contentType"]["sys"]["id"] != "activitiy" {
-        InvalidContentType->Error->Promise.resolve
+        InvalidContentType->Promise.reject
       } else {
         switch entry["fields"].additionalImages {
-        | None => {entry: entry, images: []}->Ok->Promise.resolve
+        | None => {entry: entry, images: []}->Promise.resolve
         | Some(additionalImages) => {
             let imageAssetPromises = additionalImages->Js.Array2.map(image => {
               let imageAsset = client->getAsset(image["sys"]["id"], ())
@@ -55,34 +55,27 @@ let fetchActivity = (id: string): Promise.t<result<contentData<activityEntryFiel
             imageAssetPromises
             ->Promise.all
             ->Promise.then(images => {
-              {entry: entry, images: images}->Ok->Promise.resolve
+              {entry: entry, images: images}->Promise.resolve
             })
           }
         }
       }
     }
   })
-  ->Promise.catch(e => {
-    Js.Console.error(e)
-    switch e {
-    | Promise.JsError(err) => Other(JsError(err))->Error->Promise.resolve
-    | _ => Other(String("Unknown."))->Error->Promise.resolve
-    }
-  })
 }
 
-let fetchEvent = (id: string): Promise.t<result<contentData<eventEntryFields>, errors>> =>
+let fetchEvent = (id: string) =>
   client
   ->getEntry(id)
   ->Promise.then(entry =>
     switch entry {
-    | None => EntryNotFound->Error->Promise.resolve
+    | None => EntryNotFound->Promise.reject
     | Some(entry: entry<eventEntryFields>) =>
       if entry["sys"]["contentType"]["sys"]["id"] != "event" {
-        InvalidContentType->Error->Promise.resolve
+        InvalidContentType->Promise.reject
       } else {
         switch entry["fields"].images {
-        | None => {entry: entry, images: []}->Ok->Promise.resolve
+        | None => {entry: entry, images: []}->Promise.resolve
         | Some(eventImages) => {
             let imagePromises = eventImages->Js.Array2.map(image => {
               client
@@ -97,17 +90,10 @@ let fetchEvent = (id: string): Promise.t<result<contentData<eventEntryFields>, e
             imagePromises
             ->Promise.all
             ->Promise.thenResolve(images => {
-              {entry: entry, images: images}->Ok
+              {entry: entry, images: images}
             })
           }
         }
       }
     }
   )
-  ->Promise.catch(e => {
-    Js.Console.error(e)
-    switch e {
-    | Promise.JsError(err) => Other(JsError(err))->Error->Promise.resolve
-    | _ => Other(String("Unknown."))->Error->Promise.resolve
-    }
-  })

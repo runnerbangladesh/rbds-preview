@@ -15,8 +15,9 @@
     "react-masonry-css": "^1.0.16",
     "reason-date-fns": "^1.0.2",
     "rescript-contentful": "^1.0.0",
-    "rescript-swr": "^1.1.0",
-    "sass": "1.43.5",
+    "rescript-swr": "^2.0.0",
+    "rescript-these": "^1.0.0",
+    "sass": "1.44.0",
     "swr": "^1.0.1",
     "typeface-fira-sans": "^1.1.13",
     "typeface-roboto-slab": "^1.1.13"
