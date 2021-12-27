@@ -1,9 +1,9 @@
-open React
 open Client
 open ReasonDateFns
 open! Extensions
 
 let renderEntry = (entry, images) => {
+  open React
   let parsedBody = Marked.marked->Marked.parse(entry.articleBody)
   let parsedDate = Js.Date.fromString(entry.date)
 
@@ -70,6 +70,7 @@ let renderEntry = (entry, images) => {
 
 @react.component
 let make = (~id: string) => {
+  open React
   let {state, isValidating, loadingSlow} = Hooks.useData(id, fetchActivity)
 
   switch state {

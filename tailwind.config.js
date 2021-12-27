@@ -1,16 +1,5 @@
 module.exports = {
-  mode: "jit",
-  purge: {
-    content: [
-      "./src/components/**/*.res",
-      "./src/pages/**/*.res",
-      "./src/*.res",
-    ],
-    options: {
-      safelist: ["html", "body"],
-    },
-  },
-  darkMode: true,
+  content: ["./src/**/*.{html,js}"],
   theme: {
     extend: {
       colors: {

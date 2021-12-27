@@ -4,5 +4,5 @@
 
 switch ReactDOM.querySelector("#root") {
 | Some(root) => ReactDOM.render(<React.StrictMode> <App /> </React.StrictMode>, root)
-| None => Js.Console.error("React mount root missing!")
+| None => "React mount root missing!"->Js.Console.error
 }
