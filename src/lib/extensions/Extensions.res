@@ -23,16 +23,17 @@ module Hooks = {
     state: asyncStatus<These.t<'data, exn>>,
     isValidating: bool,
     loadingSlow: bool,
+    mutate: SwrCommon.keyedMutator<'data>,
   }
 
   let useData = (id, fetcher) => {
     let (loadingSlow, setLoadingSlow) = React.Uncurried.useState(_ => false)
-    let {data, error, isValidating} = Swr.useSWR_config(
+    let {data, error, isValidating, mutate} = Swr.useSWR_config(
       id,
       fetcher,
       Swr.swrConfiguration(~onLoadingSlow=(_, _) => {
         setLoadingSlow(._ => true)
-      }, ()),
+      }, ())
     )
 
     let state = switch (data, error) {
@@ -41,6 +42,6 @@ module Hooks = {
     | (None, Some(error)) => Resolved(That(error))
     | (Some(data), Some(error)) => Resolved(These(data, error))
     }
-    {state: state, isValidating: isValidating, loadingSlow: loadingSlow}
+    {state: state, isValidating: isValidating, loadingSlow: loadingSlow, mutate: mutate}
   }
 }

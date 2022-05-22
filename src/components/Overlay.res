@@ -1,9 +1,9 @@
 module Spinner = {
   @react.component
   let make = () => {
-    <div className="animate-spin fixed top-3 right-3 text-accent">
+    <div className="animate-spin text-accent">
       <svg
-        width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           opacity="0.2"
           fillRule="evenodd"
@@ -22,9 +22,9 @@ module Spinner = {
 module Error = {
   @react.component
   let make = () => {
-    <div className="fixed top-3 right-3 text-accent" title="Error refreshing data. Check network connection and retry.">
+    <div className="text-accent">
       <svg
-        width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
           d="M12 6C12.5523 6 13 6.44772 13 7V13C13 13.5523 12.5523 14 12 14C11.4477 14 11 13.5523 11 13V7C11 6.44772 11.4477 6 12 6Z"
           fill="currentColor"

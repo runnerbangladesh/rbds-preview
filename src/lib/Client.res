@@ -8,6 +8,7 @@ type activityEntryFields = {
   articleBody: string,
   date: string,
   additionalImages: option<array<asset>>,
+  slug: string,
 }
 type eventEntryFields = {
   title: string,

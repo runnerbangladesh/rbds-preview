@@ -8,9 +8,10 @@ let formatDate = DateFns.format("cccc, d MMMM yyyy")
 let formatTime = DateFns.format("p")
 
 let renderDates = (startDate, endDate) => {
+  open Js.Date
   switch endDate {
   | None => <span> {formatDate(startDate)->string} </span>
-  | Some(endDate) if endDate->Js.Date.getDay != startDate->Js.Date.getDay =>
+  | Some(endDate) if endDate->getDay != startDate->getDay =>
     <span> {(formatDate(startDate) ++ " to " ++ formatDate(endDate))->string} </span>
   | _ => <span />
   }
@@ -32,7 +33,7 @@ let renderTimes = (startDate, endDate) => {
 let renderEntry = entry => {
   let parsedStartDate = Js.Date.fromString(entry.eventStartDate)
   let parsedEndDate = entry.eventEndDate->Belt.Option.map(Js.Date.fromString)
-  <div className="p-4 mx-52 flex flex-col flex-auto">
+  <div className="p-4 pt-16 md:mx-52 flex flex-col flex-auto">
     {switch entry.images {
     | Some(images) =>
       <img
@@ -70,7 +71,21 @@ let renderEntry = entry => {
 
 @react.component
 let make = (~id: string) => {
-  let {state, isValidating, loadingSlow} = Hooks.useData(id, fetchEvent)
+  open! Js
+
+  let {state, isValidating, loadingSlow, mutate} = Hooks.useData(id, fetchEvent)
+
+  let status = (slug, isError) =>
+    <Status
+      title="Event Preview"
+      isValidating={isValidating}
+      canonicalUrl={"https://events.runnerbangladesh.org/archives/" ++ slug}
+      isError={isError}
+      onRefresh={() => {
+        mutate(. Some(data => Promise.resolve(data->Option.getExn)), None)->ignore
+      }}
+    />
+
 
   switch state {
   | Loading => <LoadingComponent loadingSlow={loadingSlow} />
@@ -80,11 +95,11 @@ let make = (~id: string) => {
     | That(err) => <ErrorComponent error={err} />
     | This(entry) => {
         document["title"] = `Preview ― ` ++ entry.title
-        <> {isValidating ? <Overlay.Spinner /> : null} {renderEntry(entry)} </>
+        <> {status(entry.slug, false)} {renderEntry(entry)} </>
       }
     | These(entry, _) => {
         document["title"] = `Trouble loading preview ― ` ++ entry.title
-        <> {isValidating ? <Overlay.Spinner /> : <Overlay.Error />} {renderEntry(entry)} </>
+        <> {status(entry.slug, true)} {renderEntry(entry)} </>
       }
     }
   }
