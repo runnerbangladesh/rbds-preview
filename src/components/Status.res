@@ -1,6 +1,4 @@
-let frames: array<
-  string,
-> = %raw(`[ "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" ]`)
+let frames: array<string> = [`⠋`, `⠙`, `⠹`, `⠸`, `⠼`, `⠴`, `⠦`, `⠧`, `⠇`, `⠏`]
 
 @react.component
 let make = (
