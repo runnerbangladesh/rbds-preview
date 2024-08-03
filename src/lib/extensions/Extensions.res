@@ -2,6 +2,7 @@ open These
 
 exception InvalidContentType
 exception EntryNotFound
+exception JsError(Exn.t)
 
 type asyncStatus<'a> = Loading | Resolved('a)
 
@@ -20,7 +21,7 @@ module ContentfulReact = {
 
 module Hooks = {
   type useData<'data> = {
-    state: asyncStatus<These.t<'data, exn>>,
+    state: asyncStatus<These.t<'data, Exn.t>>,
     isValidating: bool,
     loadingSlow: bool,
     mutate: SwrCommon.keyedMutator<'data>,
@@ -31,9 +32,7 @@ module Hooks = {
     let {data, error, isValidating, mutate} = Swr.useSWR_config(
       id,
       fetcher,
-      Swr.swrConfiguration(~onLoadingSlow=(_, _) => {
-        setLoadingSlow(._ => true)
-      }, ())
+      {onLoadingSlow: (_, _) => {setLoadingSlow(_ => true)}},
     )
 
     let state = switch (data, error) {
@@ -42,6 +41,10 @@ module Hooks = {
     | (None, Some(error)) => Resolved(That(error))
     | (Some(data), Some(error)) => Resolved(These(data, error))
     }
-    {state: state, isValidating: isValidating, loadingSlow: loadingSlow, mutate: mutate}
+    {state, isValidating, loadingSlow, mutate}
   }
+}
+
+let getRandomInt = max => {
+  Math.floor(Math.random() ** max)->Int.fromFloat
 }

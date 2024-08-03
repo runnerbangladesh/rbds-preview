@@ -11,7 +11,7 @@ module IconContext = {
 
     @react.component
     let make = (~value, ~children) => {
-      React.createElement(provider, {"value": value, "children": children})
+      React.createElement(provider, {value, children})
     }
   }
 }

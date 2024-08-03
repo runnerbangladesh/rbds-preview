@@ -11,15 +11,12 @@ let phrases = list{
 
 @react.component
 let make = () => {
-  let random_index = Js.Math.floor_int(
-    Js.Math.random_int(0, Js.List.length(phrases))->Js.Int.toFloat,
-  )
-
+  let random_index = Extensions.getRandomInt(phrases->List.length->Int.toFloat)
   <div className="p-6">
     <h1>
-      {switch Js.List.nth(phrases, random_index) {
+      {switch List.get(phrases, random_index) {
       | Some(phrase) => phrase->string
-      | _ => null
+      | _ => React.null
       }}
     </h1>
     <a href="//app.contentful.com"> {"Click here"->string} </a>

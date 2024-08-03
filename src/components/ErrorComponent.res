@@ -3,7 +3,8 @@ open Extensions
 
 @react.component
 let make = (~error: exn) => {
-  document["title"] = `Preview ― An error occurred`
+  Extensions.document["title"] = `Preview ― An error occurred`
+
   <div className="p-6">
     <h5> {"Four-oh-four!"->string} </h5>
     <p className="leading-tight">
@@ -11,8 +12,8 @@ let make = (~error: exn) => {
         {switch error {
         | InvalidContentType => "Content type is invalid."
         | EntryNotFound => "Entry not found."
-        | Js.Exn.Error(exn) | Promise.JsError(exn) =>
-          switch Js.Exn.message(exn) {
+        | Exn.Error(exn) =>
+          switch Exn.message(exn) {
           | Some(msg) => msg
           | None => "Cannot determine error type."
           }

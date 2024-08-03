@@ -1,14 +1,18 @@
 open React
 open Client
-open ReasonDateFns
 open ReactIcons
-open! Extensions
+open Extensions
 
-let formatDate = DateFns.format("cccc, d MMMM yyyy")
-let formatTime = DateFns.format("p")
+let makeFormatter = Intl.DateTimeFormat.make(~locales=["en-IN"], ...)
+
+let dateFormatter = makeFormatter(~options={dateStyle: #medium})
+let timeFormatter = makeFormatter(~options={timeStyle: #short})
+
+let formatDate = Intl.DateTimeFormat.format(dateFormatter, ...)
+let formatTime = Intl.DateTimeFormat.format(timeFormatter, ...)
 
 let renderDates = (startDate, endDate) => {
-  open Js.Date
+  open Date
   switch endDate {
   | None => <span> {formatDate(startDate)->string} </span>
   | Some(endDate) if endDate->getDay != startDate->getDay =>
@@ -22,7 +26,7 @@ let renderTimes = (startDate, endDate) => {
   switch endDate {
   | None => <span> {formattedStart->string} </span>
   | Some(endDate) =>
-    if endDate->Js.Date.getDay != startDate->Js.Date.getDay {
+    if endDate->Date.getDay != startDate->Date.getDay {
       <span> {(formattedStart ++ " to " ++ formatTime(endDate))->string} </span>
     } else {
       <span> {formattedStart->string} </span>
@@ -31,16 +35,16 @@ let renderTimes = (startDate, endDate) => {
 }
 
 let renderEntry = entry => {
-  let parsedStartDate = Js.Date.fromString(entry.eventStartDate)
-  let parsedEndDate = entry.eventEndDate->Belt.Option.map(Js.Date.fromString)
+  let parsedStartDate = Date.fromString(entry.eventStartDate)
+  let parsedEndDate = entry.eventEndDate->Option.map(Date.fromString)
   <div className="p-4 pt-16 md:mx-52 flex flex-col flex-auto">
     {switch entry.images {
-    | Some(images) =>
+    | Some([image]) =>
       <img
-        src={images[0]["fields"]["file"]["url"] ++ "?h=400&fm=webp&q=70"}
+        src={image["fields"]["file"]["url"] ++ "?h=400&fm=webp&q=70"}
         className="max-w-full object-cover mb-4 rounded-lg shadow-lg"
       />
-    | _ => null
+    | _ => React.null
     }}
     <h1 className="text-accent text-4xl leading-tight font-medium"> {entry.title->string} </h1>
     <IconContext.Provider
@@ -52,13 +56,21 @@ let renderEntry = entry => {
         <span> {parsedStartDate->formatDate->string} </span>
         <span> {renderDates(parsedStartDate, parsedEndDate)} </span>
         {switch entry.eventVenue {
-        | Some(venue) => <span> <Fi.FaMapPin /> {venue->string} </span>
-        | None => null
+        | Some(venue) =>
+          <span>
+            <Fi.FaMapPin />
+            {venue->string}
+          </span>
+        | None => React.null
         }}
-        <span> <Fi.FiClock /> {renderTimes(parsedStartDate, parsedEndDate)} </span>
+        <span>
+          <Fi.FiClock />
+          {renderTimes(parsedStartDate, parsedEndDate)}
+        </span>
         <span>
           <a href={entry.facebookLink} rel="noopener noreferrer nofollow" target="_blank">
-            <Fi.FiFacebook /> {" View on Facebook"->string}
+            <Fi.FiFacebook />
+            {" View on Facebook"->string}
           </a>
         </span>
       </span>
@@ -71,8 +83,6 @@ let renderEntry = entry => {
 
 @react.component
 let make = (~id: string) => {
-  open! Js
-
   let {state, isValidating, loadingSlow, mutate} = Hooks.useData(id, fetchEvent)
 
   let status = (slug, isError) =>
@@ -82,24 +92,29 @@ let make = (~id: string) => {
       canonicalUrl={"https://events.runnerbangladesh.org/archives/" ++ slug}
       isError={isError}
       onRefresh={() => {
-        mutate(. Some(data => Promise.resolve(data->Option.getExn)), None)->ignore
+        mutate(data => Obj.magic(data), None)->ignore
       }}
     />
-
 
   switch state {
   | Loading => <LoadingComponent loadingSlow={loadingSlow} />
   | Resolved(result) =>
-    let entry = result->These.mapThisU((. data) => data.entry["fields"])
+    let entry = result->These.mapThisU(data => data.entry["fields"])
     switch entry {
-    | That(err) => <ErrorComponent error={err} />
+    | That(err) => <ErrorComponent error={JsError(err)} />
     | This(entry) => {
-        document["title"] = `Preview ― ` ++ entry.title
-        <> {status(entry.slug, false)} {renderEntry(entry)} </>
+        Extensions.document["title"] = `Preview ― ` ++ entry.title
+        <>
+          {status(entry.slug, false)}
+          {renderEntry(entry)}
+        </>
       }
     | These(entry, _) => {
-        document["title"] = `Trouble loading preview ― ` ++ entry.title
-        <> {status(entry.slug, true)} {renderEntry(entry)} </>
+        Extensions.document["title"] = `Trouble loading preview ― ` ++ entry.title
+        <>
+          {status(entry.slug, true)}
+          {renderEntry(entry)}
+        </>
       }
     }
   }

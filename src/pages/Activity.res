@@ -1,10 +1,10 @@
 open Client
-open ReasonDateFns
 open! Extensions
 
 let renderEntry = (entry, images) => {
   open React
-  open! Js
+
+  let dateFormatter = Intl.DateTimeFormat.make(~locales=["en-IN"], ~options={dateStyle: #long})
 
   let parsedBody = Marked.marked->Marked.parse(entry.articleBody)
   let parsedDate = Date.fromString(entry.date)
@@ -19,7 +19,7 @@ let renderEntry = (entry, images) => {
                 {entry.title->string}
               </h1>
               <span className="text-gray-400 mt-2 leading-none block text-xl font-normal">
-                {DateFns.format("d MMMM yyyy", parsedDate)->string}
+                {dateFormatter->Intl.DateTimeFormat.format(parsedDate)->string}
               </span>
             </div>
           </div>
@@ -29,9 +29,9 @@ let renderEntry = (entry, images) => {
     <article>
       {images->Array.length > 0
         ? <Masonry
-            breakpointCols={if images->Array2.length <= 6 && mod(images->Array.length, 2) == 0 {
+            breakpointCols={if images->Array.length <= 6 && mod(images->Array.length, 2) == 0 {
               Dict.fromArray([("default", 2), ("640", 2)])
-            } else if images->Js.Array2.length == 1 {
+            } else if images->Array.length == 1 {
               Dict.fromArray([("default", 1)])
             } else {
               Dict.fromArray([("default", 4), ("1440", 3), ("1280", 2), ("640", 1)])
@@ -39,9 +39,9 @@ let renderEntry = (entry, images) => {
             className="flex -ml-15 w-auto md:mx-24 p-3"
             columnClassName="pl-2 bg-clip-padding">
             {images
-            ->Array2.mapi((image, index) => {
+            ->Array.mapWithIndex((image, index) => {
               <div
-                key={index->Belt.Int.toString}
+                key={index->Int.toString}
                 role="button"
                 tabIndex={0}
                 className="shadow cursor-pointer relative mb-2">
@@ -74,8 +74,6 @@ let renderEntry = (entry, images) => {
 
 @react.component
 let make = (~id: string) => {
-  open! Js
-
   let {state, isValidating, loadingSlow, mutate} = Hooks.useData(id, fetchActivity)
 
   let status = (slug, isError) =>
@@ -85,19 +83,22 @@ let make = (~id: string) => {
       canonicalUrl={"https://runnerbangladesh.org/activities/" ++ slug}
       isError={isError}
       onRefresh={() => {
-        mutate(. Some(data => Promise.resolve(data->Option.getExn)), None)->ignore
+        mutate(data => Obj.magic(data), None)->ignore
       }}
     />
 
   switch state {
   | Loading => <LoadingComponent loadingSlow={loadingSlow} />
   | Resolved(result) =>
-    let data = result->These.mapThisU((. data) => (data.entry["fields"], data.images))
+    let data = result->These.mapThisU(data => (data.entry["fields"], data.images))
     switch data {
-    | That(err) => <ErrorComponent error={err} />
+    | That(err) => <ErrorComponent error={JsError(err)} />
     | This((entry, images)) => {
         document["title"] = `Preview ― ` ++ entry.title
-        <> {status(entry.slug, false)} {renderEntry(entry, images)} </>
+        <>
+          {status(entry.slug, false)}
+          {renderEntry(entry, images)}
+        </>
       }
     | These((entry, images), _) => {
         document["title"] = `Trouble loading preview ― ` ++ entry.title

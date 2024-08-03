@@ -10,18 +10,17 @@ let make = (
   (),
 ) => {
   open React
-  open! Js
 
   let (frame, setFrame) = useState(_ => 0)
 
   useEffect1(() => {
-    let length = frames->Array2.length
+    let length = frames->Array.length
 
-    let anim = Global.setInterval(() => {
+    let anim = setInterval(() => {
       setFrame(i => i + 1 == length ? 0 : i + 1)
     }, 150)
 
-    Some(() => Global.clearInterval(anim))
+    Some(() => clearInterval(anim))
   }, [])
 
   <div className="fixed w-full z-10 bg-black text-white flex justify-between">
@@ -29,7 +28,7 @@ let make = (
       <span className="mr-3 grow shrink-0"> {title->String.toUpperCase->string} </span>
       {!isValidating
         ? <span className="text-zinc-500 shrink">
-            {frames->Array2.unsafe_get(frame)->React.string}
+            {frames->Array.getUnsafe(frame)->React.string}
             {" "->string}
             <span className="hidden md:inline"> {"Watching for changes..."->string} </span>
           </span>

@@ -22,16 +22,13 @@ type eventEntryFields = {
 }
 type contentData<'fields> = {entry: entry<'fields>, images: array<imageData>}
 
-let client = createClient(
-  makeClientOpts(
-    ~accessToken=%raw(`import.meta.env.VITE_ACCESS_TOKEN`),
-    ~space=%raw(`import.meta.env.VITE_SPACE_ID`),
-    ~host="preview.contentful.com",
-    (),
-  ),
-)
+let client = createClient({
+  accessToken: %raw(`import.meta.env.VITE_ACCESS_TOKEN`),
+  space: %raw(`import.meta.env.VITE_SPACE_ID`),
+  host: "preview.contentful.com",
+})
 
-let fetchActivity = (id: string): Promise.t<contentData<activityEntryFields>> => {
+let fetchActivity = (id: string): promise<contentData<activityEntryFields>> => {
   client
   ->getEntry(id)
   ->Promise.then(entry => {
@@ -42,21 +39,23 @@ let fetchActivity = (id: string): Promise.t<contentData<activityEntryFields>> =>
         InvalidContentType->Promise.reject
       } else {
         switch entry["fields"].additionalImages {
-        | None => {entry: entry, images: []}->Promise.resolve
+        | None => {entry, images: []}->Promise.resolve
         | Some(additionalImages) => {
-            let imageAssetPromises = additionalImages->Js.Array2.map(image => {
-              let imageAsset = client->getAsset(image["sys"]["id"], ())
-              imageAsset->Promise.then(image => {
-                Promise.resolve({
-                  description: image["fields"]["description"],
-                  url: image["fields"]["file"]["url"],
-                })
-              })
+            let imageAssetPromises = additionalImages->Array.map(image => {
+              let imageAsset = client->getAsset(image["sys"]["id"])
+              imageAsset->Promise.then(
+                image => {
+                  Promise.resolve({
+                    description: image["fields"]["description"],
+                    url: image["fields"]["file"]["url"],
+                  })
+                },
+              )
             })
             imageAssetPromises
             ->Promise.all
             ->Promise.then(images => {
-              {entry: entry, images: images}->Promise.resolve
+              {entry, images}->Promise.resolve
             })
           }
         }
@@ -76,22 +75,24 @@ let fetchEvent = (id: string) =>
         InvalidContentType->Promise.reject
       } else {
         switch entry["fields"].images {
-        | None => {entry: entry, images: []}->Promise.resolve
+        | None => {entry, images: []}->Promise.resolve
         | Some(eventImages) => {
-            let imagePromises = eventImages->Js.Array2.map(image => {
+            let imagePromises = eventImages->Array.map(image => {
               client
-              ->getAsset(image["sys"]["id"], ())
-              ->Promise.thenResolve(image => {
-                {
-                  description: image["fields"]["description"],
-                  url: image["fields"]["file"]["url"],
-                }
-              })
+              ->getAsset(image["sys"]["id"])
+              ->Promise.thenResolve(
+                image => {
+                  {
+                    description: image["fields"]["description"],
+                    url: image["fields"]["file"]["url"],
+                  }
+                },
+              )
             })
             imagePromises
             ->Promise.all
             ->Promise.thenResolve(images => {
-              {entry: entry, images: images}
+              {entry, images}
             })
           }
         }

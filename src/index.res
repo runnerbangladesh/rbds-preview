@@ -1,8 +1,14 @@
-%%raw(`import "typeface-fira-sans"`)
-%%raw(`import "typeface-roboto-slab"`)
+%%raw(`import "@fontsource/fira-sans/latin-400.css"`)
+%%raw(`import "@fontsource/roboto-slab/latin-400.css"`)
 %%raw(`import "./index.css"`)
 
-switch ReactDOM.querySelector("#root") {
-| Some(root) => ReactDOM.render(<React.StrictMode> <App /> </React.StrictMode>, root)
-| None => "React mount root missing!"->Js.Console.error
+open ReactDOM
+
+switch querySelector("#root") {
+| Some(el) => Client.createRoot(el)->Client.Root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+  )
+| None => "React mount root missing!"->Console.error
 }
