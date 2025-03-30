@@ -23,7 +23,5 @@
     "rescript-contentful",
     "rescript-these"
   ],
-  "bsc-flags": [
-    "-open RescriptCore"
-  ],
+  "bsc-flags": ["-open RescriptCore"]
 }

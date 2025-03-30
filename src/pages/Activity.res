@@ -47,7 +47,7 @@ let renderEntry = (entry, images) => {
                 className="shadow cursor-pointer relative mb-2">
                 <img
                   src={image.url ++ "?w=1200&fm=webp&q=70"}
-                  className="rounded-md fit-cover opacity-1 block w-full h-auto"
+                  className="rounded-md fit-cover opacity-100 block w-full h-auto"
                 />
                 {image.description != ""
                   ? <div

@@ -50,7 +50,9 @@ let renderEntry = entry => {
     <IconContext.Provider
       value={
         color: "var(--accent-color)",
-        style: ReactDOMStyle.make(~marginRight="8px", ()),
+        style: {
+          marginRight: "8px",
+        },
       }>
       <span className="text-md leading-tight font-light text-xl e-meta">
         <span> {parsedStartDate->formatDate->string} </span>
